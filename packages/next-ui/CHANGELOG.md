@@ -1,5 +1,23 @@
 # Change Log
 
+## 5.2.0-canary.17
+
+## 5.2.0-canary.16
+
+## 5.2.0-canary.15
+
+### Minor Changes
+
+- [#1798](https://github.com/graphcommerce-org/graphcommerce/pull/1798) [`3cee17a51`](https://github.com/graphcommerce-org/graphcommerce/commit/3cee17a51ff961f4363d95c9decb8c7d1f9ca319) - Added filterByTypename function to filter types based on \_\_typename ([@mikekeehnen](https://github.com/mikekeehnen))
+
+## 5.2.0-canary.14
+
+## 5.2.0-canary.13
+
+### Minor Changes
+
+- [#1795](https://github.com/graphcommerce-org/graphcommerce/pull/1795) [`236d698b2`](https://github.com/graphcommerce-org/graphcommerce/commit/236d698b2aac55598fc45a6a58574a538f23e160) - Navigation link fix, homepage and category style fixes ([@ErwinOtten](https://github.com/ErwinOtten))
+
 ## 5.2.0-canary.12
 
 ## 5.2.0-canary.11

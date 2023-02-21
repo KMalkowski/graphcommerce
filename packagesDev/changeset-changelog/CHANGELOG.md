@@ -1,5 +1,15 @@
 # @graphcommerce/changeset-changelog
 
+## 5.2.0-canary.17
+
+## 5.2.0-canary.16
+
+## 5.2.0-canary.15
+
+## 5.2.0-canary.14
+
+## 5.2.0-canary.13
+
 ## 5.2.0-canary.12
 
 ## 5.2.0-canary.11
