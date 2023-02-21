@@ -1,7 +1,7 @@
 import { ProductPageGallery, ProductPageGalleryProps } from '@graphcommerce/magento-product'
 import { useConfigurableOptionsSelection } from '../../hooks/useConfigurableOptionsSelection'
 
-type ConfigurableProductPageGalleryProps = ProductPageGalleryProps & {
+export type ConfigurableProductPageGalleryProps = ProductPageGalleryProps & {
   url_key?: string | null
   index?: number
 }

@@ -1,5 +1,11 @@
 fragment GtagAddToCart on Cart @inject(into: ["CartItemCountChanged"]) {
   items {
+    product{
+      manufacturer
+      categories{
+        name
+      }
+    }
     prices {
       discounts {
         amount {

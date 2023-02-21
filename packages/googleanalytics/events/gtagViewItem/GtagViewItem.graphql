@@ -1,0 +1,15 @@
+fragment GtagViewItem on ProductInterface @inject(into: ["ProductPageMeta"]) {
+  sku
+  name
+  price_range {
+    minimum_price {
+      discount {
+        amount_off
+      }
+      final_price {
+        currency
+        value
+      }
+    }
+  }
+}

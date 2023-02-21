@@ -24,6 +24,7 @@ export function gtagAddPurchaseInfo(
         price: item?.prices?.price.value,
         quantity: item?.quantity,
       })),
+      shipping: cart?.shipping_addresses?.[0]?.selected_shipping_method?.amount.value,
     })
   }
 }

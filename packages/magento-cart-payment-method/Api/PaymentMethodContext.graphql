@@ -13,4 +13,11 @@ fragment PaymentMethodContext on Cart @injectable {
       }
     }
   }
+  shipping_addresses {
+    selected_shipping_method {
+      amount {
+        value
+      }
+    }
+  }
 }

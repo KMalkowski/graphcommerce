@@ -24,6 +24,12 @@ export const gtagAddToCart = (
           {
             item_id: addedItem?.product.sku,
             item_name: addedItem?.product.name,
+            item_brand: addedItem?.product.manufacturer,
+            item_category: addedItem?.product.categories?.[0],
+            item_category2: addedItem?.product.categories?.[1],
+            item_category3: addedItem?.product.categories?.[2],
+            item_category4: addedItem?.product.categories?.[3],
+            item_category5: addedItem?.product.categories?.[4],
             currency: addedItem?.prices?.price.currency,
             price: pricePerItemInclTax,
             quantity: variables.cartItems[0].quantity,
