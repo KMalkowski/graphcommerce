@@ -12,10 +12,16 @@ export function GaCartStartCheckoutLinkOrButton(
 ) {
   const { Prev, onStart, ...rest } = props
 
-  useEffect(() => gtagViewCart({
-    items: rest.items,
-    prices: rest.prices
-  }), [])
+  useEffect(
+    () =>
+      gtagViewCart({
+        items: rest.items,
+        prices: rest.prices,
+      }),
+    // We're disabling eslint rule to prevent this event from being triggerd on every rerender
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  )
 
   return (
     <Prev
