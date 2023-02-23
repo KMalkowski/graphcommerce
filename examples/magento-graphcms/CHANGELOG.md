@@ -1,5 +1,51 @@
 # Change Log
 
+## 6.0.0-canary.24
+
+## 6.0.0-canary.23
+
+### Minor Changes
+
+- [#1810](https://github.com/graphcommerce-org/graphcommerce/pull/1810) [`543c5d5b2`](https://github.com/graphcommerce-org/graphcommerce/commit/543c5d5b2b6f29c1f6a0a405524d4cc86f399596) - Added `limitSsg: Boolean` configuration option to limit the getStaticPaths generation during build. This is useful to make quick deployments on preview environments. ([@paales](https://github.com/paales))
+
+## 6.0.0-canary.22
+
+### Patch Changes
+
+- [#1808](https://github.com/graphcommerce-org/graphcommerce/pull/1808) [`847ee17e5`](https://github.com/graphcommerce-org/graphcommerce/commit/847ee17e512fcfd5367c5f6b3840d19b6bc9299f) - make FullPageMessage titles translatable and update translations. ([@carlocarels90](https://github.com/carlocarels90))
+
+## 6.0.0-canary.21
+
+## 6.0.0-canary.20
+
+### Major Changes
+
+- [#1786](https://github.com/graphcommerce-org/graphcommerce/pull/1786) [`26239ef73`](https://github.com/graphcommerce-org/graphcommerce/commit/26239ef73e49731224b227f1eb850dde56d40584) - Bumped minimum version to node16 ([@paales](https://github.com/paales))
+
+### Minor Changes
+
+- [#1786](https://github.com/graphcommerce-org/graphcommerce/pull/1786) [`b76679204`](https://github.com/graphcommerce-org/graphcommerce/commit/b766792049e1e6ebe45671c0b36e78746ef159e2) - Added a new graphcommerce.config.ts which can be accessed with import.mete.graphCommerce.myConfig ([@paales](https://github.com/paales))
+
+### Patch Changes
+
+- [#1786](https://github.com/graphcommerce-org/graphcommerce/pull/1786) [`090102051`](https://github.com/graphcommerce-org/graphcommerce/commit/09010205174d7c8b48ed94b44226b4c03fd6e680) - Filter the Hygraph schema to be smaller ([@paales](https://github.com/paales))
+
+- [#1786](https://github.com/graphcommerce-org/graphcommerce/pull/1786) [`b8c951678`](https://github.com/graphcommerce-org/graphcommerce/commit/b8c95167839b03d8bf2299a230d36fd3144cea0b) - Enabled [onDemandEntries](https://nextjs.org/docs/api-reference/next.config.js/configuring-onDemandEntries) for faster development flow. ([@paales](https://github.com/paales))
+
+- [#1786](https://github.com/graphcommerce-org/graphcommerce/pull/1786) [`71624a87f`](https://github.com/graphcommerce-org/graphcommerce/commit/71624a87f4b6add01eb9e1d1e2f927a995aa3b8b) - patch @graphql-mesh/graphql that will prevent generating the complete schema in code. ([@paales](https://github.com/paales))
+
+## 5.2.0-canary.19
+
+## 5.2.0-canary.18
+
+### Minor Changes
+
+- [#1790](https://github.com/graphcommerce-org/graphcommerce/pull/1790) [`1fbd1e2b2`](https://github.com/graphcommerce-org/graphcommerce/commit/1fbd1e2b20cd875c481e10a81343da961c8baf8f) - - PayPal: PayPal didn’t show the ‘processing payment’ message giving the impression it wasn’t doing anything. ([@LaurensFranken](https://github.com/LaurensFranken))
+
+### Patch Changes
+
+- [#1790](https://github.com/graphcommerce-org/graphcommerce/pull/1790) [`875a595da`](https://github.com/graphcommerce-org/graphcommerce/commit/875a595da5f52b77bc2535cf4a660267b0046a1e) - ApolloClient cache would balloon with all redirects and make sure redirects work ([@LaurensFranken](https://github.com/LaurensFranken))
+
 ## 5.2.0-canary.17
 
 ## 5.2.0-canary.16

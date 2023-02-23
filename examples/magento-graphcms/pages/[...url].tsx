@@ -110,7 +110,7 @@ function CategoryPage(props: CategoryProps) {
           <CategoryDescription description={category.description} />
           <CategoryChildren params={params}>{category.children}</CategoryChildren>
           <StickyBelowHeader>
-            {process.env.NEXT_PUBLIC_ADVANCED_FILTERS ? (
+            {import.meta.graphCommerce.productFiltersPro ? (
               <ProductFiltersPro params={params}>
                 <ProductListFiltersContainer>
                   <ProductFiltersProFilterChips {...filters} filterTypes={filterTypes} />
@@ -206,7 +206,7 @@ export const getStaticProps: GetPageStaticProps = async ({ params, locale }) => 
   const hasCategory = Boolean(productListParams && categoryUid)
 
   if (!productListParams || !(hasPage || hasCategory))
-    return redirectOrNotFound(client, params, locale)
+    return redirectOrNotFound(staticClient, params, locale)
 
   if (!hasCategory) {
     return {

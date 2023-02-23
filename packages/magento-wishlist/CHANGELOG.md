@@ -1,5 +1,23 @@
 # @graphcommerce/magento-wishlist
 
+## 6.0.0-canary.24
+
+## 6.0.0-canary.23
+
+## 6.0.0-canary.22
+
+## 6.0.0-canary.21
+
+## 6.0.0-canary.20
+
+## 5.2.0-canary.19
+
+### Patch Changes
+
+- [#1800](https://github.com/graphcommerce-org/graphcommerce/pull/1800) [`2d90523e8`](https://github.com/graphcommerce-org/graphcommerce/commit/2d90523e8f52919215587f3a989faa31122c1e7a) - If the user is not logged in + the "Hide for Guests” variable is enabled, the WishlistFabContent should not be displayed. ([@carlocarels90](https://github.com/carlocarels90))
+
+## 5.2.0-canary.18
+
 ## 5.2.0-canary.17
 
 ## 5.2.0-canary.16
