@@ -1,5 +1,15 @@
 # Change Log
 
+## 6.0.0
+
+### Minor Changes
+
+- [#1786](https://github.com/graphcommerce-org/graphcommerce/pull/1786) [`63cfbd4ea`](https://github.com/graphcommerce-org/graphcommerce/commit/63cfbd4ea33978ccfe45c156ef07ece72add70ce) - option to not require meta tags for categories ([@paales](https://github.com/paales))
+
+### Patch Changes
+
+- [#1780](https://github.com/graphcommerce-org/graphcommerce/pull/1780) [`667f58856`](https://github.com/graphcommerce-org/graphcommerce/commit/667f58856107c25f6c44561e12083239637e6a09) - Option to not require meta tags for categories ([@StefanAngenent](https://github.com/StefanAngenent))
+
 ## 6.0.0-canary.26
 
 ## 6.0.0-canary.25

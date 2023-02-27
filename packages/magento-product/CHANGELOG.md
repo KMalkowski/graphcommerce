@@ -1,5 +1,23 @@
 # Change Log
 
+## 6.0.0
+
+### Minor Changes
+
+- [#1749](https://github.com/graphcommerce-org/graphcommerce/pull/1749) [`0cc472915`](https://github.com/graphcommerce-org/graphcommerce/commit/0cc4729154d316227a41712b5f0adf514768e91f) - Added new filter UI and behaviour. Filters will appear as a popper on the md and up breakpoints and as an overlay on sm and below breakpoints. Filters now have an Apply button instead of applying directly. ([@paales](https://github.com/paales))
+
+- [#1786](https://github.com/graphcommerce-org/graphcommerce/pull/1786) [`b76679204`](https://github.com/graphcommerce-org/graphcommerce/commit/b766792049e1e6ebe45671c0b36e78746ef159e2) - Added a new graphcommerce.config.ts which can be accessed with import.mete.graphCommerce.myConfig ([@paales](https://github.com/paales))
+
+- [#1791](https://github.com/graphcommerce-org/graphcommerce/pull/1791) [`38461cbc1`](https://github.com/graphcommerce-org/graphcommerce/commit/38461cbc1ba7f9478be3405abe10c7aee2a30363) - Add price tiers feature ([@haelbichalex](https://github.com/haelbichalex))
+
+### Patch Changes
+
+- [#1799](https://github.com/graphcommerce-org/graphcommerce/pull/1799) [`cdf7eafc4`](https://github.com/graphcommerce-org/graphcommerce/commit/cdf7eafc4f16e2b02daae1b2403f6f69b3154bdc) - prevent that ProductListFilters will render ‘category_uid’ as filter ([@carlocarels90](https://github.com/carlocarels90))
+
+- [#1749](https://github.com/graphcommerce-org/graphcommerce/pull/1749) [`16e91da42`](https://github.com/graphcommerce-org/graphcommerce/commit/16e91da42dcb454ea4761d1780b9338c88ef1463) - Fix spelling error incomming to incoming ([@paales](https://github.com/paales))
+
+- [#1749](https://github.com/graphcommerce-org/graphcommerce/pull/1749) [`b132583d5`](https://github.com/graphcommerce-org/graphcommerce/commit/b132583d5145bb7cfe62b81695ea5a6f6bcaf083) - Generalize ProductCustomizable renderer to automatically fail the build if there are OptionTypeRenderers missing ([@paales](https://github.com/paales))
+
 ## 6.0.0-canary.26
 
 ## 6.0.0-canary.25
