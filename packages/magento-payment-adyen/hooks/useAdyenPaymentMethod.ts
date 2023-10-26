@@ -20,6 +20,7 @@ export function useAdyenPaymentMethod(brandCode: string) {
     return {
       ...methodConf,
       ...config,
+      paymentMethodsResponse: methods.data?.adyenPaymentMethods?.paymentMethodsResponse,
     }
   }, [
     brandCode,

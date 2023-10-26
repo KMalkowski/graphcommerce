@@ -2,6 +2,7 @@ import {
   PaymentMethodContextProviderProps,
   PaymentModule,
 } from '@graphcommerce/magento-cart-payment-method'
+import { AdyenPaymentButton } from '../components/AdyenPaymentButton/AdyenPaymentButton'
 import type { PluginProps } from '@graphcommerce/next-config'
 import { AdyenPaymentActionCard } from '../components/AdyenPaymentActionCard/AdyenPaymentActionCard'
 import { AdyenPaymentHandler } from '../components/AdyenPaymentHandler/AdyenPaymentHandler'
@@ -14,6 +15,7 @@ export const adyen_hpp: PaymentModule = {
   PaymentHandler: AdyenPaymentHandler,
   PaymentActionCard: AdyenPaymentActionCard,
   expandMethods: adyenHppExpandMethods,
+  PaymentButton: AdyenPaymentButton,
 }
 
 export const component = 'PaymentMethodContextProvider'

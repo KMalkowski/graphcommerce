@@ -20,7 +20,7 @@ const defaultRenderer: Partial<ContentTypeRenderer> = {
   RowColumnOne,
   RowColumnTwo,
   RowColumnThree,
-  RowHeroBanner,
+  // RowHeroBanner,
   RowSpecialBanner,
   RowQuote,
   RowBlogContent,
@@ -41,10 +41,6 @@ export function RowRenderer(props: PageProps) {
 
   return (
     // eslint-disable-next-line react/jsx-no-useless-fragment
-    <>
-      {content?.map((item) => (
-        <RenderType key={item.id} renderer={mergedRenderer} {...item} />
-      ))}
-    </>
+    <>{content?.map((item) => <RenderType key={item.id} renderer={mergedRenderer} {...item} />)}</>
   )
 }

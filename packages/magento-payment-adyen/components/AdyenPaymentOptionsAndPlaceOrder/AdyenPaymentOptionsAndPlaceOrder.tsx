@@ -1,30 +1,57 @@
-import { useFormCompose, useFormPersist, useFormValidFields } from '@graphcommerce/ecommerce-ui'
+import { type PaymentAction } from '@adyen/adyen-web/dist/types/types'
+import {
+  useFormCompose,
+  useFormPersist,
+  useFormValidFields,
+  TextFieldElement,
+} from '@graphcommerce/ecommerce-ui'
 import { useFormGqlMutationCart } from '@graphcommerce/magento-cart'
 import {
   PaymentOptionsProps,
   usePaymentMethodContext,
 } from '@graphcommerce/magento-cart-payment-method'
-import { FormRow, InputCheckmark } from '@graphcommerce/next-ui'
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { TextField } from '@mui/material'
+import { ErrorSnackbar, FormRow, InputCheckmark } from '@graphcommerce/next-ui'
+import { Trans } from '@lingui/react'
+import { Box } from '@mui/material'
 import { useRouter } from 'next/router'
+import { ReactElement, useRef, useState } from 'react'
 import { useAdyenCartLock } from '../../hooks/useAdyenCartLock'
+import {
+  useAdyenCreateOnSiteCheckout,
+  adyenSuccessStatuses,
+  type adyenComponentState,
+} from '../../hooks/useAdyenCreateOnSiteCheckout'
 import { useAdyenPaymentMethod } from '../../hooks/useAdyenPaymentMethod'
 import {
   AdyenPaymentOptionsAndPlaceOrderMutation,
   AdyenPaymentOptionsAndPlaceOrderMutationVariables,
   AdyenPaymentOptionsAndPlaceOrderDocument,
 } from './AdyenPaymentOptionsAndPlaceOrder.gql'
+import '@adyen/adyen-web/dist/adyen.css'
 
 /** It sets the selected payment method on the cart. */
 export function HppOptions(props: PaymentOptionsProps) {
   const { code, step, child: brandCode } = props
+  const [cartId, setCartId] = useState<string | undefined>()
+  const [orderNumber, setOrderNumber] = useState<string | undefined>()
+  const [adyenAdditionalAction, setAdyenAdditionalAction] = useState<PaymentAction | undefined>()
+  const [adyenError, setAdyenError] = useState<ReactElement | undefined>()
+  const paymentContainer = useRef<HTMLDivElement | undefined>()
+  const adyenComponent = useRef<adyenComponentState>({
+    state: undefined,
+    isValid: true,
+    isAllowSubmit: true,
+  })
 
   const conf = useAdyenPaymentMethod(brandCode)
 
   const [, lock] = useAdyenCartLock()
-  const { selectedMethod } = usePaymentMethodContext()
+  const { selectedMethod, onSuccess } = usePaymentMethodContext()
   const { push } = useRouter()
+
+  function scrollToPaymentComponent() {
+    paymentContainer.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }
 
   /**
    * In the this folder you'll also find a PaymentMethodOptionsNoop.graphql document that is
@@ -34,23 +61,65 @@ export function HppOptions(props: PaymentOptionsProps) {
     AdyenPaymentOptionsAndPlaceOrderMutation,
     AdyenPaymentOptionsAndPlaceOrderMutationVariables & { issuer?: string }
   >(AdyenPaymentOptionsAndPlaceOrderDocument, {
-    onBeforeSubmit: (vars) => ({
-      ...vars,
-      stateData: JSON.stringify({
-        paymentMethod: { type: brandCode, issuer: vars.issuer },
-        clientStateDataIndicator: true,
-      }),
-      brandCode,
-    }),
+    onBeforeSubmit: (vars) => {
+      if (!adyenComponent.current.isValid) {
+        setAdyenError(<Trans id='Please fill in the payment form with correct information.' />)
+        scrollToPaymentComponent()
+        throw new Error('Payment form filled in incorrectly.')
+      }
+
+      if (brandCode === 'scheme' && adyenComponent.current.state) {
+        return {
+          ...vars,
+          stateData: JSON.stringify(adyenComponent.current.state),
+          brandCode: adyenComponent.current?.state.paymentMethod.brand || '',
+          paymentMethodCode: 'adyen_cc',
+        }
+      }
+
+      return {
+        ...vars,
+        stateData: adyenComponent.current.state
+          ? JSON.stringify(adyenComponent.current.state)
+          : JSON.stringify({
+              paymentMethod: { type: brandCode, issuer: vars.issuer },
+              clientStateDataIndicator: true,
+            }),
+        brandCode,
+        paymentMethodCode: 'adyen_hpp',
+      }
+    },
     onComplete: async (result) => {
       const merchantReference = result.data?.placeOrder?.order.order_number
+      const cartIdResult = result.data?.setPaymentMethodOnCart?.cart.id
       const action = result?.data?.placeOrder?.order.adyen_payment_status?.action
+      const isFinal = result?.data?.placeOrder?.order.adyen_payment_status?.isFinal
+      const resultCode = result?.data?.placeOrder?.order.adyen_payment_status?.resultCode
 
-      if (result.errors || !merchantReference || !selectedMethod?.code || !action) return
+      setCartId(cartIdResult)
+      setOrderNumber(merchantReference)
+      if (isFinal && resultCode && merchantReference) {
+        if (resultCode && adyenSuccessStatuses.includes(resultCode)) {
+          await onSuccess(merchantReference)
+        } else {
+          setAdyenError(
+            <Trans id='The payment is refused, please try again or select a different payment method.' />,
+          )
+          throw new Error('Payment refused, try again.')
+        }
+      } else {
+        if (result.errors || !merchantReference || !selectedMethod?.code || !action) return
 
-      const url = JSON.parse(action).url as string
-      await lock({ method: selectedMethod.code, adyen: '1', merchantReference })
-      await push(url)
+        const actionParsed = JSON.parse(action)
+        if (actionParsed.type === 'redirect' && typeof actionParsed.url === 'string') {
+          await lock({ method: selectedMethod.code, adyen: '1', merchantReference })
+          await push(actionParsed.url as string)
+        } else {
+          setAdyenAdditionalAction(actionParsed)
+          scrollToPaymentComponent()
+          throw new Error('Additional action required')
+        }
+      }
     },
   })
 
@@ -64,9 +133,38 @@ export function HppOptions(props: PaymentOptionsProps) {
   const valid = useFormValidFields(form, required)
 
   /** To use an external Pay button we register the current form to be handled there as well. */
-  useFormCompose({ form, step, submit, key })
+  const { isValid } = useFormCompose({ form, step, submit, key })
+  adyenComponent.current.isAllowSubmit = isValid
 
-  if (!conf?.issuers?.length) return <form onSubmit={submit} noValidate />
+  useAdyenCreateOnSiteCheckout({
+    brandCode,
+    cartId,
+    orderNumber,
+    paymentContainer,
+    adyenComponent,
+    adyenAdditionalAction,
+    setAdyenAdditionalAction,
+    adyenError,
+    setAdyenError,
+    onSuccess,
+    submit,
+  })
+
+  if (!conf?.issuers?.length)
+    return (
+      <>
+        <form onSubmit={submit} noValidate />
+        <Box ref={paymentContainer} id='adyenPaymentContainer' />
+        <ErrorSnackbar
+          open={!!adyenError}
+          onClose={() => {
+            setAdyenError(undefined)
+          }}
+        >
+          {adyenError}
+        </ErrorSnackbar>
+      </>
+    )
 
   /**
    * This is the form that the user can fill in. In this case we don't wat the user to fill in
@@ -76,7 +174,7 @@ export function HppOptions(props: PaymentOptionsProps) {
     <form key={key} onSubmit={submit} noValidate>
       {conf?.issuers && (
         <FormRow>
-          <TextField
+          <TextFieldElement
             defaultValue=''
             variant='outlined'
             color='secondary'
@@ -102,7 +200,7 @@ export function HppOptions(props: PaymentOptionsProps) {
                 </option>
               )
             })}
-          </TextField>
+          </TextFieldElement>
         </FormRow>
       )}
     </form>
