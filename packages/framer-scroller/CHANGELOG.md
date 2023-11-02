@@ -1,5 +1,71 @@
 # Change Log
 
+## 7.1.0-canary.31
+
+## 7.1.0-canary.30
+
+## 7.1.0-canary.29
+
+## 7.1.0-canary.28
+
+## 7.1.0-canary.27
+
+## 7.1.0-canary.26
+
+## 7.1.0-canary.25
+
+### Patch Changes
+
+- [#2085](https://github.com/graphcommerce-org/graphcommerce/pull/2085) [`3c92993d9`](https://github.com/graphcommerce-org/graphcommerce/commit/3c92993d9ca74f24ea784b20448958ca1bb8e224) - SideBarGallery image won't start scrolling from the beginning if user clicks multiple times on the scroll button. ([@Jessevdpoel](https://github.com/Jessevdpoel))
+
+## 7.1.0-canary.24
+
+## 7.1.0-canary.23
+
+## 7.1.0-canary.22
+
+## 7.1.0-canary.21
+
+## 7.1.0-canary.20
+
+## 7.1.0-canary.19
+
+## 7.1.0-canary.18
+
+## 7.1.0-canary.17
+
+## 7.1.0-canary.16
+
+## 7.1.0-canary.15
+
+## 7.1.0-canary.14
+
+### Patch Changes
+
+- [#2045](https://github.com/graphcommerce-org/graphcommerce/pull/2045) [`1ac1e0989`](https://github.com/graphcommerce-org/graphcommerce/commit/1ac1e09897daadd646200cb3ddc2aa75a51e182e) - Make sure the product image gallery traps focus and scrollbar doesn't disappear suddenly ([@JoshuaS98](https://github.com/JoshuaS98))
+
+## 7.1.0-canary.13
+
+## 7.1.0-canary.12
+
+## 7.1.0-canary.11
+
+## 7.1.0-canary.10
+
+## 7.1.0-canary.9
+
+## 7.1.0-canary.8
+
+## 7.0.2-canary.7
+
+## 7.0.2-canary.6
+
+### Patch Changes
+
+- [#2066](https://github.com/graphcommerce-org/graphcommerce/pull/2066) [`3b1f58515`](https://github.com/graphcommerce-org/graphcommerce/commit/3b1f585153672a644a613411134e5ad36aa4c266) - Add showButtons prop to scrollerButton ([@StefanAngenent](https://github.com/StefanAngenent))
+
+## 7.0.2-canary.5
+
 ## 7.0.1
 
 ## 7.0.1-canary.15
