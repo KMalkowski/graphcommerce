@@ -1,15 +1,19 @@
 import AdyenCheckout from '@adyen/adyen-web'
 import ApplePayElement from '@adyen/adyen-web/dist/types/components/ApplePay'
+import UIElement from '@adyen/adyen-web/dist/types/components/UIElement'
 import PaymentMethodsResponse from '@adyen/adyen-web/dist/types/core/ProcessResponse/PaymentMethodsResponse'
 import { PaymentAction } from '@adyen/adyen-web/dist/types/types'
-import { useMutation } from '@graphcommerce/graphql'
+import { FetchResult, useMutation } from '@graphcommerce/graphql'
 import { useCartQuery } from '@graphcommerce/magento-cart'
 import { BillingPageDocument } from '@graphcommerce/magento-cart-checkout'
-import { useAdyenPaymentMethod } from './useAdyenPaymentMethod'
 import { Trans } from '@lingui/react'
 import { useRouter } from 'next/router'
 import { Dispatch, ReactElement, SetStateAction, useEffect, useState } from 'react'
-import { AdyenPaymentDetailsDocument } from '../components/AdyenPaymentHandler/AdyenPaymentDetails.gql'
+import {
+  AdyenPaymentDetailsDocument,
+  AdyenPaymentDetailsMutation,
+} from '../components/AdyenPaymentHandler/AdyenPaymentDetails.gql'
+import { useAdyenPaymentMethod } from './useAdyenPaymentMethod'
 
 type useAdyenCreateOnSiteCheckoutProps = {
   brandCode: string
@@ -51,15 +55,12 @@ export function useAdyenCreateOnSiteCheckout(props: useAdyenCreateOnSiteCheckout
     adyenComponent,
     adyenAdditionalAction,
     setAdyenAdditionalAction,
-    adyenError,
     setAdyenError,
   } = props
 
   const [applePayComponentMounted, setApplePayComponentMounted] = useState<
     ApplePayElement | undefined
   >()
-
-  console.log(paymentContainer.current)
 
   const { locale } = useRouter()
   const conf = useAdyenPaymentMethod(brandCode)
@@ -68,42 +69,43 @@ export function useAdyenCreateOnSiteCheckout(props: useAdyenCreateOnSiteCheckout
     fetchPolicy: 'network-only',
   })
 
-  function handleRefusedPayment(component) {
-    setAdyenError(
-      <Trans id='The payment is refused, please try again or select a different payment method.' />,
-    )
-    setAdyenAdditionalAction(undefined)
-    component?.remount()
-  }
-
   useEffect(() => {
     let ignore = false
-    console.log(process.env.NEXT_PUBLIC_ADYEN_CLIENT_KEY)
-    console.log(conf)
-    console.log('node env', process.env.NODE_ENV)
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    function handleRefusedPayment(component: UIElement<any>) {
+      setAdyenError(
+        <Trans id='The payment is refused, please try again or select a different payment method.' />,
+      )
+      setAdyenAdditionalAction(undefined)
+      component?.remount()
+    }
+
     if (
       supportedOnSitePaymentMethods.includes(brandCode) &&
       conf?.paymentMethodsResponse?.paymentMethods
     ) {
       const createCheckout = async () => {
         const checkout = await AdyenCheckout({
-          locale: locale,
+          locale,
           environment: process.env.NODE_ENV === 'development' ? 'test' : 'live',
           clientKey: process.env.NEXT_PUBLIC_ADYEN_CLIENT_KEY,
           paymentMethodsResponse: conf.paymentMethodsResponse as PaymentMethodsResponse,
           onError: (error, component) => {
             if (process.env.NODE_ENV === 'development') console.log(error)
-            handleRefusedPayment(component)
+            if (component) {
+              handleRefusedPayment(component)
+            }
           },
           onChange(state) {
             adyenComponent.current.isValid = state.isValid
             adyenComponent.current.state = state.data
           },
           onAdditionalDetails: async (state, component) => {
-            console.log('addtionale', state, component)
-            if (cartId && orderNumber) {
+            if (cartId && orderNumber && component) {
               state.data.orderId = orderNumber
-              let paymentDetails
+              let paymentDetails: FetchResult<AdyenPaymentDetailsMutation> | undefined
+
               try {
                 paymentDetails = await getPaymentDetails({
                   variables: { cartId, payload: JSON.stringify(state.data) },
@@ -111,7 +113,7 @@ export function useAdyenCreateOnSiteCheckout(props: useAdyenCreateOnSiteCheckout
               } catch (e) {
                 if (process.env.NODE_ENV === 'development') console.log(e)
               }
-              console.log('paymentDetails', paymentDetails)
+
               if (!paymentDetails) {
                 handleRefusedPayment(component)
                 return
@@ -142,19 +144,16 @@ export function useAdyenCreateOnSiteCheckout(props: useAdyenCreateOnSiteCheckout
 
         // The 'ignore' flag is used to avoid double re-rendering caused by React 18 StrictMode
         // More about it here: https://beta.reactjs.org/learn/synchronizing-with-effects#fetching-data
-        console.log('ignore', ignore)
-        console.log('paymentContainer.current ', paymentContainer.current)
         if (paymentContainer.current && !ignore) {
-          console.log('testing')
           if (brandCode === 'applepay') {
             if (!applePayComponentMounted && cartResult?.cart?.prices?.grand_total?.value) {
               const options = {
                 amount: {
-                  value: cartResult.cart?.prices?.grand_total?.value * 100,
+                  value: cartResult.cart.prices.grand_total.value * 100,
                   currency: cartResult.cart?.prices?.grand_total?.currency,
                 },
                 buttonType: 'order',
-                countryCode: cartResult.cart?.shipping_addresses[0]?.country?.code,
+                countryCode: cartResult.cart.shipping_addresses[0]?.country?.code,
                 totalPriceLabel: 'Authorization',
                 onClick: (resolve, reject) => {
                   if (adyenComponent.current.isAllowSubmit) {
@@ -178,15 +177,13 @@ export function useAdyenCreateOnSiteCheckout(props: useAdyenCreateOnSiteCheckout
                     paymentContainer.current &&
                     setApplePayComponentMounted(applePayComponent.mount(paymentContainer.current)),
                 )
-                .catch((_e) => {
-                  adyenError ??
-                    setAdyenError(
-                      <Trans id='Apple Pay is not available on your device, please use a mobile apple device or Safari browser on your Mac.' />,
-                    )
+                .catch(() => {
+                  setAdyenError(
+                    <Trans id='Apple Pay is not available on your device. Please use the Safari browser if you wish to make a purchase using this payment method.' />,
+                  )
                 })
             }
           } else {
-            console.log('create', brandCode)
             checkout.create(brandCode).mount(paymentContainer.current)
           }
         }
@@ -199,10 +196,26 @@ export function useAdyenCreateOnSiteCheckout(props: useAdyenCreateOnSiteCheckout
       createCheckout().catch((e) => {
         if (process.env.NODE_ENV === 'development') console.log(e)
       })
-
-      return () => {
-        ignore = true
-      }
     }
-  }, [brandCode, adyenAdditionalAction, applePayComponentMounted, cartResult, conf])
+
+    return () => {
+      ignore = true
+    }
+  }, [
+    brandCode,
+    adyenAdditionalAction,
+    applePayComponentMounted,
+    cartResult,
+    conf,
+    locale,
+    paymentContainer,
+    adyenComponent,
+    cartId,
+    orderNumber,
+    getPaymentDetails,
+    onSuccess,
+    submit,
+    setAdyenError,
+    setAdyenAdditionalAction,
+  ])
 }

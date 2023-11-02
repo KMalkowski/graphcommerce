@@ -1,10 +1,5 @@
 import { type PaymentAction } from '@adyen/adyen-web/dist/types/types'
-import {
-  useFormCompose,
-  useFormPersist,
-  useFormValidFields,
-  TextFieldElement,
-} from '@graphcommerce/ecommerce-ui'
+import { useFormCompose, useFormPersist, useFormValidFields } from '@graphcommerce/ecommerce-ui'
 import { useFormGqlMutationCart } from '@graphcommerce/magento-cart'
 import {
   PaymentOptionsProps,
@@ -12,7 +7,7 @@ import {
 } from '@graphcommerce/magento-cart-payment-method'
 import { ErrorSnackbar, FormRow, InputCheckmark } from '@graphcommerce/next-ui'
 import { Trans } from '@lingui/react'
-import { Box } from '@mui/material'
+import { Box, TextField } from '@mui/material'
 import { useRouter } from 'next/router'
 import { ReactElement, useRef, useState } from 'react'
 import { useAdyenCartLock } from '../../hooks/useAdyenCartLock'
@@ -110,10 +105,10 @@ export function HppOptions(props: PaymentOptionsProps) {
       } else {
         if (result.errors || !merchantReference || !selectedMethod?.code || !action) return
 
-        const actionParsed = JSON.parse(action)
+        const actionParsed = JSON.parse(action) as PaymentAction
         if (actionParsed.type === 'redirect' && typeof actionParsed.url === 'string') {
           await lock({ method: selectedMethod.code, adyen: '1', merchantReference })
-          await push(actionParsed.url as string)
+          await push(actionParsed.url)
         } else {
           setAdyenAdditionalAction(actionParsed)
           scrollToPaymentComponent()
@@ -174,7 +169,7 @@ export function HppOptions(props: PaymentOptionsProps) {
     <form key={key} onSubmit={submit} noValidate>
       {conf?.issuers && (
         <FormRow>
-          <TextFieldElement
+          <TextField
             defaultValue=''
             variant='outlined'
             color='secondary'
@@ -200,7 +195,7 @@ export function HppOptions(props: PaymentOptionsProps) {
                 </option>
               )
             })}
-          </TextFieldElement>
+          </TextField>
         </FormRow>
       )}
     </form>
